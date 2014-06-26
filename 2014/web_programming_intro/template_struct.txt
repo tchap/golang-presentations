@@ -1,0 +1,3 @@
+Template: <script>var pair = {{.}};</script>
+Data:     struct{A,B string}{ "foo", "bar" }
+Output    <script>var pair = {"A": "foo", "B": "bar"};</script>

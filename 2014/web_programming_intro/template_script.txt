@@ -1,0 +1,3 @@
+Template: {{define "T"}}Hello, {{.}}!{{end}}
+Data:     <script>alert('you have been pwned')</script>
+Output:   Hello, &lt;script&gt;alert(&#39;you have been pwned&#39;)&lt;/script&gt;!

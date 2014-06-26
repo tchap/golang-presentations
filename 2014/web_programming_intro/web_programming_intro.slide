@@ -1,0 +1,170 @@
+Golang Web Programming Introduction
+and the Active Record thing
+27 Jun 2014
+Tags: golang, web, active record
+
+Ondřej Kupka
+Software Developer, Salsita Software
+ondrej@salsitasoft.com
+http://about.me/ondrejkupka
+@ondrejkupka
+
+* Language Overview
+
+Never google Go, it's Golang!
+
+- static types
+- concurrent programming
+- garbage collector
+- no exceptions (multiple return values)
+- similar to C, but memory safety and much more
+
+* Built-in Types
+
+- int8/16/32/64, uint8/16/32/64, float32/64, complex32/64, byte, rune, string
+- struct, interface
+- no generics, but the built-in types are parameterized
+
+.code types.go
+
+* Structs
+
+Look like C structs with methods.
+
+.code structs.go /START STRUCT/,/END STRUCT/
+
+* Interfaces
+
+Interfaces define, well, interfaces. No need to specify explicitly.
+
+.code structs.go /START INTERFACE/,/END INTERFACE/
+.play structs.go /^func main/,/^}/
+
+* Concurrency
+
+Goroutines are lightweight threads that run concurrently.
+They exchange data over typed channels.
+
+.play goroutines.go /^func main/,/^}/
+.play goroutines_channel.go /^func main/,/^}/
+.play goroutines_waitgroup.go /^func main/,/^}/
+
+* Channels
+
+Thread-safe typed queues that are either buffered or not.
+
+.code channels.go
+
+Goroutines block on
+- send to an unbuffered channel, unless there is someone listening on the other end
+- send to a buffered channel when there is no space left
+- receive on a channel, unless there is some data available
+
+Channels can be closed on the sender side, then the receiver unblocks with no data received.
+
+.play channels_close.go /^func main/,/^}/
+
+* Channels - select
+
+Often it is necessary to block on multiple channels at once.
+
+.code channels_select.go
+
+The default branch is executed when no send or receive is possible.
+It can be used to prioritize stuff.
+
+Unlike in Erlang, the goroutine can consume multiple input channels.
+Select picks a random channel that is available, so one sender cannot really
+saturate the input. Also the channels are limited in capacity.
+
+* Goroutines
+
+- lightweight threads
+- internal scheduler
+- small initial stack (4 KB, copy and expand when more is necessary)
+- cooperative (state checked at well-defined points - channels, I/O, ...)
+- put to sleep when I/O is necessary, async I/O under the hood
+- async I/O without callbacks, Go runtime handles it for you, yay
+
+.code io.go
+
+* What is Left
+
+- quite some batteries included in the stdlib
+- the almighty go command
+
+.code go_help.txt
+
+* Web Programming Starts Now
+
+- net/http package, new goroutine spawned for every request
+
+.code http.go
+.code http_serve.go
+
+* Request Routing
+
+.link https://github.com/bmizerany/pat github.com/bmizerany/pat
+
+.code pat.go
+
+* Middleware
+
+.link https://github.com/codegangsta/negroni github.com/codegangsta/negroni
+
+.code negroni_handler.go
+.code negroni.go
+
+* Templates
+
+.link http://golang.org/pkg/html/template html/template
+
+This package understands HTML, CSS, JavaScript, and URIs, it automatically escapes
+according to the context.
+
+.code template_query.txt
+.code template_script.txt
+.code template_struct.txt
+.code template_pipeline.txt
+
+* Accessing the Database
+
+.link http://labix.org/mgo labix.org/mgo
+
+.code mgo.go
+
+* Validating Input
+
+.link https://github.com/go-validator/validator github.com/go-validator/validator
+
+.code validator.go
+
+Supports custom validators (i.e. custom tags like min, max, regex keys).
+
+* Saving data
+
+What we actually need to do on POST:
+
+.code save_person.go
+
+* Saving data, less ugly
+
+Just refactoring, still ugly and not very readable.
+
+.code app_save.go
+
+* Saving data, even less ugly
+
+Here we have to put the app into the struct and write custom Save, not pretty.
+
+.code person_save.go
+
+* Saving data - reflection
+
+We could just inspect interface{} and see what to do...
+
+.code ac_reflect.go
+
+* What is Next
+
+Now you can continue on your own, all the public interfaces are there for you ;-)

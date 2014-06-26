@@ -1,0 +1,4 @@
+funcMap := template.FuncMap{"title": strings.Title}
+Template: {{title .}} OR {{title . | printf %q}} OR {{printf "%q" . | title}}
+Data:     here we go
+Output:   Here We Go

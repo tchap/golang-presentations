@@ -1,0 +1,3 @@
+<a title='{{.}}'>   => How are you?
+<a href="/{{.}}">   => How are %3ci%3eyou%3c/i%3e?
+<a href="?q={{.}}"> => How%20are%3ci%3e...%3f
